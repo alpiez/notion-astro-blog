@@ -1,19 +1,20 @@
 ---
 interface Props {
   className: string;
-  tag: string;
+  tagName: string;
+  tagColor: string;
 }
 
-const { className = "", tag = "" }: Props = Astro.props;
+const { className = "", tagName = "", tagColor = "" }: Props = Astro.props;
 const tagProp: { [key: string]: string } = {
-  life: "bg-tag-green",
-  finance: "bg-tag-yellow",
-  programming: "bg-tag-purple",
+  green: "bg-tag-green",
+  yellow: "bg-tag-yellow",
+  purple: "bg-tag-purple",
 };
 ---
 
 <div
-  class={`w-fit h-7 ${tagProp[tag]} rounded-md py-2 px-3 flex justify-center items-center ${className}`}
+  class={`w-fit h-7 ${tagProp[tagColor]} rounded-md py-2 px-3 flex justify-center items-center ${className}`}
 >
-  {tag}
+  {tagName}
 </div>

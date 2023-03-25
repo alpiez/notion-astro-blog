@@ -51,7 +51,8 @@ const response = await notion.databases.query({
             notionPg.properties.Intro.rich_text.length) != 0 ? (
             <Blog
               title={notionPg.properties.Title.title[0].plain_text}
-              tag={notionPg.properties.Tags.multi_select[0].name}
+              tagName={notionPg.properties.Tags.multi_select[0].name}
+              tagColor={notionPg.properties.Tags.multi_select[0].color}
               intro={notionPg.properties.Intro.rich_text[0].plain_text}
             />
           ) : (
