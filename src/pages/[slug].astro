@@ -1,0 +1,33 @@
+---
+import { Client } from "@notionhq/client";
+
+export async function getStaticPaths() {
+  const notion = new Client({ auth: import.meta.env.SECRET_NOTION_KEY });
+  const databaseId = import.meta.env.SECRET_NOTION_DATABASE_ID;
+
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    sorts: [
+      {
+        property: "Created",
+        direction: "ascending",
+      },
+    ],
+  });
+
+  return response.results.map((page) => {
+    if (
+      "properties" in page &&
+      "formula" in page.properties.Slug &&
+      "string" in page.properties.Slug.formula
+    ) {
+      return {
+        params: { slug: page.properties.Slug.formula.string },
+      };
+    }
+  });
+}
+const { slug } = Astro.params;
+---
+
+<div>{slug}</div>

@@ -45,6 +45,8 @@ const response = await notion.databases.query({
           "title" in notionPg.properties.Title &&
           "multi_select" in notionPg.properties.Tags &&
           "rich_text" in notionPg.properties.Intro &&
+          "formula" in notionPg.properties.Slug &&
+          "string" in notionPg.properties.Slug.formula &&
           // Ensure that the content is not empty
           (notionPg.properties.Title.title.length &&
             notionPg.properties.Tags.multi_select.length &&
@@ -54,6 +56,7 @@ const response = await notion.databases.query({
               tagName={notionPg.properties.Tags.multi_select[0].name}
               tagColor={notionPg.properties.Tags.multi_select[0].color}
               intro={notionPg.properties.Intro.rich_text[0].plain_text}
+              slug={notionPg.properties.Slug.formula.string}
             />
           ) : (
             ""
