@@ -6,6 +6,7 @@ import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "@fontsource/poppins/800.css";
 import "@fontsource/poppins/900.css";
+import Htmlbody from "../components/htmlbody.astro";
 import { Client } from "@notionhq/client";
 import Blog from "../components/cards/blog.astro";
 
@@ -24,45 +25,36 @@ const response = await notion.databases.query({
 // console.log(response.results[0].properties.Title.title[0].plain_text);
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>notion astro</title>
-  </head>
-  <body>
-    <header class="h-20 px-4 flex justify-between items-center">
-      <h1 class="font-bold text-4xl leading-none">notion astro blog</h1>
-    </header>
-    <div class="px-4">
-      {
-        response.results.map((notionPg) =>
-          // Ensure that the page has properties
-          "properties" in notionPg &&
-          // Ensure that the type exist in these properties
-          "title" in notionPg.properties.Title &&
-          "multi_select" in notionPg.properties.Tags &&
-          "rich_text" in notionPg.properties.Intro &&
-          "formula" in notionPg.properties.Slug &&
-          "string" in notionPg.properties.Slug.formula &&
-          // Ensure that the content is not empty
-          (notionPg.properties.Title.title.length &&
-            notionPg.properties.Tags.multi_select.length &&
-            notionPg.properties.Intro.rich_text.length) != 0 ? (
-            <Blog
-              title={notionPg.properties.Title.title[0].plain_text}
-              tagName={notionPg.properties.Tags.multi_select[0].name}
-              tagColor={notionPg.properties.Tags.multi_select[0].color}
-              intro={notionPg.properties.Intro.rich_text[0].plain_text}
-              slug={notionPg.properties.Slug.formula.string}
-            />
-          ) : (
-            ""
-          )
+<Htmlbody>
+  <header class="h-20 px-4 flex justify-between items-center">
+    <h1 class="font-bold text-4xl leading-none">notion astro blog</h1>
+  </header>
+  <div class="px-4">
+    {
+      response.results.map((notionPg) =>
+        // Ensure that the page has properties
+        "properties" in notionPg &&
+        // Ensure that the type exist in these properties
+        "title" in notionPg.properties.Title &&
+        "multi_select" in notionPg.properties.Tags &&
+        "rich_text" in notionPg.properties.Intro &&
+        "formula" in notionPg.properties.Slug &&
+        "string" in notionPg.properties.Slug.formula &&
+        // Ensure that the content is not empty
+        (notionPg.properties.Title.title.length &&
+          notionPg.properties.Tags.multi_select.length &&
+          notionPg.properties.Intro.rich_text.length) != 0 ? (
+          <Blog
+            title={notionPg.properties.Title.title[0].plain_text}
+            tagName={notionPg.properties.Tags.multi_select[0].name}
+            tagColor={notionPg.properties.Tags.multi_select[0].color}
+            intro={notionPg.properties.Intro.rich_text[0].plain_text}
+            slug={notionPg.properties.Slug.formula.string}
+          />
+        ) : (
+          ""
         )
-      }
-    </div>
-  </body>
-</html>
+      )
+    }
+  </div>
+</Htmlbody>
