@@ -4,7 +4,7 @@ import Tag from "./tag.astro";
 const { title = "", tag = "", intro = "" } = Astro.props;
 ---
 
-<div class="bg-c-sky h-52 w-full rounded-2xl p-4">
+<div class="bg-c-sky h-52 w-full rounded-2xl p-4 mb-4">
   <h2 class="font-semibold text-2xl mb-2">{title}</h2>
   <Tag className="mb-2" tag={tag} />
   <p>{intro}</p>
