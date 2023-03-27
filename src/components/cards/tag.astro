@@ -7,9 +7,16 @@ interface Props {
 
 const { className = "", tagName = "", tagColor = "" }: Props = Astro.props;
 const tagProp: { [key: string]: string } = {
-  green: "bg-tag-green",
+  default: "bg-tag-lgray",
+  gray: "bg-tag-gray",
+  brown: "bg-tag-brown",
+  orange: "bg-tag-orange",
   yellow: "bg-tag-yellow",
+  green: "bg-tag-green",
+  blue: "bg-tag-blue",
   purple: "bg-tag-purple",
+  pink: "bg-tag-pink",
+  red: "bg-tag-red",
 };
 ---
 

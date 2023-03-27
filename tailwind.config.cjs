@@ -9,9 +9,16 @@ module.exports = {
     extend: {
       colors: {
         "c-sky": "#CAE1E2",
-        "tag-green": "#9DCE77",
+        "tag-lgray": "#D9D9D9",
+        "tag-gray": "#A4A4A4",
+        "tag-brown": "#B4816C",
+        "tag-orange": "#E88C59",
         "tag-yellow": "#F5D06F",
+        "tag-green": "#9DCE77",
+        "tag-blue": "#5BB4E5",
         "tag-purple": "#B383DA",
+        "tag-pink": "#EE86D1",
+        "tag-red": "#F47575",
       },
     },
   },
