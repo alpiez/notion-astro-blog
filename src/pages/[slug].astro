@@ -1,6 +1,7 @@
 ---
 import Htmlbody from "../components/htmlbody.astro";
 import { databaseId, notion } from "../lib/common_var";
+import { getContentFromSlug } from "../lib/search_slug";
 
 export async function getStaticPaths() {
   const response = await notion.databases.query({
@@ -27,37 +28,15 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-let { title = "" } = Astro.props;
+let { title = "", content = "" } = Astro.props;
 
 if (slug != undefined) {
-  const response = await notion.databases.query({
-    database_id: databaseId,
-    sorts: [
-      {
-        property: "Created",
-        direction: "ascending",
-      },
-    ],
-    filter: {
-      property: "Slug",
-      formula: {
-        string: {
-          contains: slug,
-        },
-      },
-    },
-  });
-
-  if (
-    "properties" in response.results[0] &&
-    "title" in response.results[0].properties.Title
-  ) {
-    title = response.results[0].properties.Title.title[0].plain_text;
-  }
+  [title, content] = await getContentFromSlug(slug);
 }
 ---
 
 <Htmlbody>
   <div>{slug}</div>
   <div>{title}</div>
+  <div>{content}</div>
 </Htmlbody>
