@@ -1,4 +1,5 @@
 ---
+import BlogRender from "../components/blog_render.astro";
 import Htmlbody from "../components/htmlbody.astro";
 import { databaseId, notion } from "../lib/common_var";
 import { getContentFromSlug } from "../lib/search_slug";
@@ -28,7 +29,7 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-let { title = "", content = "" } = Astro.props;
+let { title = "", content = null } = Astro.props;
 
 if (slug != undefined) {
   [title, content] = await getContentFromSlug(slug);
@@ -38,5 +39,6 @@ if (slug != undefined) {
 <Htmlbody>
   <div>{slug}</div>
   <div>{title}</div>
-  <div>{content}</div>
+  <!-- <div>{JSON.stringify(content)}</div> -->
+  <BlogRender response={content} />
 </Htmlbody>
