@@ -7,11 +7,8 @@ import "@fontsource/poppins/700.css";
 import "@fontsource/poppins/800.css";
 import "@fontsource/poppins/900.css";
 import Htmlbody from "../components/htmlbody.astro";
-import { Client } from "@notionhq/client";
 import Blog from "../components/cards/blog.astro";
-
-const notion = new Client({ auth: import.meta.env.SECRET_NOTION_KEY });
-const databaseId = import.meta.env.SECRET_NOTION_DATABASE_ID;
+import { databaseId, notion } from "../lib/common_var";
 
 const response = await notion.databases.query({
   database_id: databaseId,

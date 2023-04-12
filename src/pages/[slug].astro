@@ -1,11 +1,8 @@
 ---
 import Htmlbody from "../components/htmlbody.astro";
-import { Client } from "@notionhq/client";
+import { databaseId, notion } from "../lib/common_var";
 
 export async function getStaticPaths() {
-  const notion = new Client({ auth: import.meta.env.SECRET_NOTION_KEY });
-  const databaseId = import.meta.env.SECRET_NOTION_DATABASE_ID;
-
   const response = await notion.databases.query({
     database_id: databaseId,
     sorts: [
@@ -28,9 +25,6 @@ export async function getStaticPaths() {
     }
   });
 }
-
-const notion = new Client({ auth: import.meta.env.SECRET_NOTION_KEY });
-const databaseId = import.meta.env.SECRET_NOTION_DATABASE_ID;
 
 const { slug } = Astro.params;
 let { title = "" } = Astro.props;
