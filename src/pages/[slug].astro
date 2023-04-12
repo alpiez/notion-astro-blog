@@ -28,9 +28,42 @@ export async function getStaticPaths() {
     }
   });
 }
+
+const notion = new Client({ auth: import.meta.env.SECRET_NOTION_KEY });
+const databaseId = import.meta.env.SECRET_NOTION_DATABASE_ID;
+
 const { slug } = Astro.params;
+let { title = "" } = Astro.props;
+
+if (slug != undefined) {
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    sorts: [
+      {
+        property: "Created",
+        direction: "ascending",
+      },
+    ],
+    filter: {
+      property: "Slug",
+      formula: {
+        string: {
+          contains: slug,
+        },
+      },
+    },
+  });
+
+  if (
+    "properties" in response.results[0] &&
+    "title" in response.results[0].properties.Title
+  ) {
+    title = response.results[0].properties.Title.title[0].plain_text;
+  }
+}
 ---
 
 <Htmlbody>
   <div>{slug}</div>
+  <div>{title}</div>
 </Htmlbody>
