@@ -2,7 +2,7 @@
 import BlogRender from "../components/blog_render.astro";
 import Htmlbody from "../components/htmlbody.astro";
 import { databaseId, notion } from "../lib/common_var";
-import { getContentFromSlug } from "../lib/search_slug";
+import { NotionResult, searchPageWithSlug } from "../lib/search_slug";
 
 export async function getStaticPaths() {
   const response = await notion.databases.query({
@@ -29,16 +29,24 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-let { title = "", content = null } = Astro.props;
+let result: NotionResult | undefined;
 
 if (slug != undefined) {
-  [title, content] = await getContentFromSlug(slug);
+  result = await searchPageWithSlug(slug);
 }
 ---
 
 <Htmlbody>
-  <div>{slug}</div>
-  <div>{title}</div>
-  <!-- <div>{JSON.stringify(content)}</div> -->
-  <BlogRender response={content} />
+  {
+    result != undefined &&
+    result.card != undefined &&
+    result.content != null ? (
+      <>
+        <div>{result.card.title}</div>
+        <BlogRender response={result.content} />
+      </>
+    ) : (
+      ""
+    )
+  }
 </Htmlbody>
