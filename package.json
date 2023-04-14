@@ -11,10 +11,12 @@
     "lint": "eslint --ext .js,.ts,.astro src"
   },
   "dependencies": {
+    "@astrojs/image": "^0.16.6",
     "@astrojs/tailwind": "^3.0.1",
     "@fontsource/poppins": "^4.5.10",
     "@notionhq/client": "^2.2.3",
-    "astro": "^2.0.17",
+    "astro": "^2.3.0",
+    "sharp": "^0.31.3",
     "tailwindcss": "^3.2.7"
   },
   "devDependencies": {
