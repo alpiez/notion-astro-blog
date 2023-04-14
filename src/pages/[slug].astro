@@ -1,8 +1,10 @@
 ---
+import { Image } from "@astrojs/image/components";
 import BlogRender from "../components/blog_render.astro";
 import Htmlbody from "../components/htmlbody.astro";
 import { databaseId, notion } from "../lib/common_var";
 import { NotionResult, searchPageWithSlug } from "../lib/search_slug";
+import Tag from "../components/cards/tag.astro";
 
 export async function getStaticPaths() {
   const response = await notion.databases.query({
@@ -42,8 +44,38 @@ if (slug != undefined) {
     result.card != undefined &&
     result.content != null ? (
       <>
-        <div>{result.card.title}</div>
-        <BlogRender response={result.content} />
+        <div class="bg-c-sky rounded-b-3xl mb-8">
+          {result.card.cover != null ? (
+            <div class="w-full h-[264px] overflow-hidden">
+              <Image
+                src={result.card.cover}
+                alt="header image"
+                width={800}
+                height={600}
+                fit="cover"
+                format={"webp"}
+                position={"center"}
+              />
+            </div>
+          ) : (
+            ""
+          )}
+          <div class="p-8">
+            <div class="text-4xl font-bold">{result.card.title}</div>
+            <div class="text-[#777] mb-2">
+              {result.card.date.toUTCString().slice(5, 16)}
+            </div>
+            <Tag
+              className="mb-4"
+              tagName={result.card.tagName}
+              tagColor={result.card.tagColor}
+            />
+            <div>{result.card.intro}</div>
+          </div>
+        </div>
+        <article class="px-8">
+          <BlogRender response={result.content} />
+        </article>
       </>
     ) : (
       ""
