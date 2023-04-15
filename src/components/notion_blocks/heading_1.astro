@@ -1,0 +1,18 @@
+---
+import type { Heading1BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+
+interface Props {
+  content: Heading1BlockObjectResponse;
+}
+
+let { content } = Astro.props;
+let head1 = null;
+
+if (content.heading_1.rich_text[0]?.type === "text") {
+  head1 = content.heading_1.rich_text[0].text.content;
+}
+---
+
+<div class="text-4xl font-bold mt-20 mb-8">
+  {head1}
+</div>
