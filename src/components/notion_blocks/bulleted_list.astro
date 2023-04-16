@@ -1,0 +1,18 @@
+---
+import type { BulletedListItemBlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+
+interface Props {
+  content: BulletedListItemBlockObjectResponse;
+}
+
+let { content } = Astro.props;
+let text = null;
+
+if (content.bulleted_list_item.rich_text[0]?.type === "text") {
+  text = content.bulleted_list_item.rich_text[0].text.content;
+}
+---
+
+<div class="text-xl mb-4">
+  • {text}
+</div>
