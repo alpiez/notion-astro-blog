@@ -1,6 +1,9 @@
-import { isFullPage } from "@notionhq/client";
+import { isFullBlock, isFullPage } from "@notionhq/client";
 import { notion, databaseId } from "./common_var";
-import type { ListBlockChildrenResponse } from "@notionhq/client/build/src/api-endpoints";
+import type {
+  BlockObjectResponse,
+  ListBlockChildrenResponse,
+} from "@notionhq/client/build/src/api-endpoints";
 
 type Card =
   | {
@@ -14,14 +17,14 @@ type Card =
     }
   | undefined;
 
-type Content = ListBlockChildrenResponse | undefined;
+type Content = BlockObjectResponse | undefined;
 
 export interface NotionResult {
   card: Card;
-  content: Content;
+  contents: Content[];
 }
 
-async function getContent(pageId: string) {
+async function getAllBlocks(pageId: string) {
   const response = await notion.blocks.children.list({
     block_id: pageId,
     page_size: 50,
@@ -30,9 +33,26 @@ async function getContent(pageId: string) {
   return response;
 }
 
+async function addToContents(response: ListBlockChildrenResponse) {
+  const contents: Content[] = [];
+
+  for (const result of response.results) {
+    if (isFullBlock(result)) {
+      contents.push(result);
+      if (result.has_children) {
+        contents.push(...(await addToContents(await getAllBlocks(result.id))));
+      }
+    }
+  }
+
+  return contents;
+}
+
+// TODO: pretty slow though
+
 export async function searchPageWithSlug(slug: string) {
   let card: Card;
-  let content: Content;
+  let contents: Content[] = [];
   const response = await notion.databases.query({
     database_id: databaseId,
     sorts: [
@@ -54,7 +74,7 @@ export async function searchPageWithSlug(slug: string) {
   const res = response.results[0];
 
   if (isFullPage(res)) {
-    content = await getContent(res.id);
+    contents = await addToContents(await getAllBlocks(res.id));
     if (
       "title" in res.properties.Title &&
       res.cover?.type == "external" &&
@@ -78,5 +98,5 @@ export async function searchPageWithSlug(slug: string) {
     }
   }
 
-  return { card, content } as NotionResult;
+  return { card, contents } as NotionResult;
 }

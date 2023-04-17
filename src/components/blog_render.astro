@@ -1,6 +1,6 @@
 ---
 import { isFullBlock } from "@notionhq/client";
-import type { ListBlockChildrenResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import Paragraph from "./notion_blocks/paragraph.astro";
 import Heading1 from "./notion_blocks/heading_1.astro";
 import Heading2 from "./notion_blocks/heading_2.astro";
@@ -9,7 +9,7 @@ import BulletedList from "./notion_blocks/bulleted_list.astro";
 import NumberedList from "./notion_blocks/numbered_list.astro";
 
 interface Props {
-  response: ListBlockChildrenResponse;
+  response: Array<BlockObjectResponse | undefined>;
 }
 
 // For bullet list count
@@ -20,8 +20,8 @@ const { response } = Astro.props;
 
 <>
   {
-    response.results?.map((result) => {
-      if (isFullBlock(result)) {
+    response.map((result) => {
+      if (result != undefined && isFullBlock(result)) {
         // Reset bullet list count if the block is no longer bullet list
         if (result.type != "numbered_list_item" && bulletCount > 1)
           bulletCount = 1;
