@@ -17,7 +17,7 @@ type Card =
     }
   | undefined;
 
-type Content = BlockObjectResponse | undefined;
+export type Content = { result: BlockObjectResponse; childrenLevel: number };
 
 export interface NotionResult {
   card: Card;
@@ -33,14 +33,20 @@ async function getAllBlocks(pageId: string) {
   return response;
 }
 
-async function addToContents(response: ListBlockChildrenResponse) {
+async function addToContents(
+  response: ListBlockChildrenResponse,
+  childrenLevel = 0
+) {
   const contents: Content[] = [];
 
   for (const result of response.results) {
     if (isFullBlock(result)) {
-      contents.push(result);
+      let i = childrenLevel;
+      contents.push({ result, childrenLevel: i });
       if (result.has_children) {
-        contents.push(...(await addToContents(await getAllBlocks(result.id))));
+        contents.push(
+          ...(await addToContents(await getAllBlocks(result.id), ++i))
+        );
       }
     }
   }

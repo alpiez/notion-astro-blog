@@ -1,15 +1,18 @@
 ---
-import type { Heading1BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { Content } from "../../lib/search_slug";
 
 interface Props {
-  content: Heading1BlockObjectResponse;
+  content: Content;
 }
 
 let { content } = Astro.props;
 let head1 = null;
 
-if (content.heading_1.rich_text[0]?.type === "text") {
-  head1 = content.heading_1.rich_text[0].text.content;
+if (
+  content.result.type === "heading_1" &&
+  content.result.heading_1.rich_text[0]?.type === "text"
+) {
+  head1 = content.result.heading_1.rich_text[0].text.content;
 }
 ---
 

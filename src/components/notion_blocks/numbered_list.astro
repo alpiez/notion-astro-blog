@@ -1,16 +1,19 @@
 ---
-import type { NumberedListItemBlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { Content } from "../../lib/search_slug";
 
 interface Props {
-  content: NumberedListItemBlockObjectResponse;
+  content: Content;
   count: number;
 }
 
 let { content, count } = Astro.props;
 let text = null;
 
-if (content.numbered_list_item.rich_text[0]?.type === "text") {
-  text = content.numbered_list_item.rich_text[0].text.content;
+if (
+  content.result.type === "numbered_list_item" &&
+  content.result.numbered_list_item.rich_text[0]?.type === "text"
+) {
+  text = content.result.numbered_list_item.rich_text[0].text.content;
 }
 ---
 

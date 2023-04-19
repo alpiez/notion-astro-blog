@@ -1,15 +1,18 @@
 ---
-import type { ParagraphBlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { Content } from "../../lib/search_slug";
 
 interface Props {
-  content: ParagraphBlockObjectResponse;
+  content: Content;
 }
 
 let { content } = Astro.props;
 let para = null;
 
-if (content.paragraph.rich_text[0]?.type === "text") {
-  para = content.paragraph.rich_text[0].text.content;
+if (
+  content.result.type === "paragraph" &&
+  content.result.paragraph.rich_text[0]?.type === "text"
+) {
+  para = content.result.paragraph.rich_text[0].text.content;
 }
 ---
 

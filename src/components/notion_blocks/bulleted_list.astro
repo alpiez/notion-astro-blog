@@ -1,18 +1,33 @@
 ---
-import type { BulletedListItemBlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import type { Content } from "../../lib/search_slug";
 
 interface Props {
-  content: BulletedListItemBlockObjectResponse;
+  content: Content;
 }
 
 let { content } = Astro.props;
 let text = null;
 
-if (content.bulleted_list_item.rich_text[0]?.type === "text") {
-  text = content.bulleted_list_item.rich_text[0].text.content;
+if (
+  content.result.type === "bulleted_list_item" &&
+  content.result.bulleted_list_item.rich_text[0]?.type === "text"
+) {
+  text = content.result.bulleted_list_item.rich_text[0].text.content;
 }
 ---
 
-<div class="text-xl mb-4">
-  • {text}
-</div>
+<ul role="list" class="list-disc list-inside text-xl mb-4">
+  {
+    content.childrenLevel == 0 ? (
+      <li>{text}</li>
+    ) : (
+      <ul
+        role="list"
+        class="list list-disc list-inside text-xl mb-4"
+        style={`margin-left: ${40 * content.childrenLevel}px`}
+      >
+        <li>{text}</li>
+      </ul>
+    )
+  }
+</ul>
