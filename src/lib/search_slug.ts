@@ -168,6 +168,5 @@ export async function searchPageWithSlug(slug: string) {
     }
   }
 
-  console.log(JSON.stringify(contents, null, 2));
   return { card, contents } as NotionResult;
 }

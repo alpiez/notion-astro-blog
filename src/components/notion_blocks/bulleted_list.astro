@@ -11,6 +11,10 @@ interface Props {
 
 let { blocksGroup } = Astro.props;
 let contents: Content[] = [];
+let text = "";
+let level = 0;
+let rawHtmlString = "";
+let endingTagCount = 0;
 
 if (
   isBlocksGroup(blocksGroup.result) &&
@@ -18,31 +22,48 @@ if (
 ) {
   contents = blocksGroup.result.contents;
 }
+
+for (const content of contents) {
+  text = "";
+
+  if (
+    isNotBlocksGroup(content.result) &&
+    content.result.type === "bulleted_list_item" &&
+    content.result.bulleted_list_item.rich_text[0]?.type === "text"
+  ) {
+    text = content.result.bulleted_list_item.rich_text[0].text.content;
+
+    //When childrenLevel is consistent, no need to add <ul> tag.
+    if (content.childrenLevel == level) {
+      rawHtmlString += `<li>${text}</li>`;
+    }
+    // If childrenLevel increase, add the <ul> tag and increment
+    // `endingTagCount` to add closing </ul> tag. We don't close tag yet since
+    //  we add another block in this inner html.
+    else if (content.childrenLevel > level) {
+      level = content.childrenLevel;
+      endingTagCount++;
+      rawHtmlString += `
+      <ul
+        role="list"
+        class="list-[revert] list-inside text-xl ml-10"
+      >
+        <li>${text}</li>`;
+    }
+    // If the childrenLevel decreases, immediately close </ul> tag and
+    // decrement `endingTagCount` to prevent extra tag.
+    else {
+      level = content.childrenLevel;
+      endingTagCount--;
+      rawHtmlString += "</ul>";
+    }
+  }
+}
+rawHtmlString += "</ul>".repeat(endingTagCount);
 ---
 
-<ul role="list" class="list-[revert] list-inside text-xl mb-4">
-  {
-    contents.map((content) => {
-      let text = "";
-      if (
-        isNotBlocksGroup(content.result) &&
-        content.result.type === "bulleted_list_item" &&
-        content.result.bulleted_list_item.rich_text[0]?.type === "text"
-      ) {
-        text = content.result.bulleted_list_item.rich_text[0].text.content;
-
-        return content.childrenLevel == 0 ? (
-          <li>{text}</li>
-        ) : (
-          <ul
-            role="list"
-            class="list-[revert] list-inside text-xl mb-4"
-            style={`margin-left: ${40 * content.childrenLevel}px`}
-          >
-            <li>{text}</li>
-          </ul>
-        );
-      }
-    })
-  }
-</ul>
+<ul
+  role="list"
+  class="list-[revert] list-inside text-xl mb-4"
+  set:html={rawHtmlString}
+/>
