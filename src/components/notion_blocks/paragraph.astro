@@ -1,5 +1,5 @@
 ---
-import type { Content } from "../../lib/search_slug";
+import { Content, isNotBlocksGroup } from "../../lib/search_slug";
 
 interface Props {
   content: Content;
@@ -9,6 +9,7 @@ let { content } = Astro.props;
 let para = null;
 
 if (
+  isNotBlocksGroup(content.result) &&
   content.result.type === "paragraph" &&
   content.result.paragraph.rich_text[0]?.type === "text"
 ) {

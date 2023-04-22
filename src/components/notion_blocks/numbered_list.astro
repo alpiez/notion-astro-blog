@@ -1,22 +1,48 @@
 ---
-import type { Content } from "../../lib/search_slug";
+import {
+  Content,
+  isBlocksGroup,
+  isNotBlocksGroup,
+} from "../../lib/search_slug";
 
 interface Props {
-  content: Content;
-  count: number;
+  blocksGroup: Content;
 }
 
-let { content, count } = Astro.props;
-let text = null;
+let { blocksGroup } = Astro.props;
+let contents: Content[] = [];
 
 if (
-  content.result.type === "numbered_list_item" &&
-  content.result.numbered_list_item.rich_text[0]?.type === "text"
+  isBlocksGroup(blocksGroup.result) &&
+  blocksGroup.result.type === "numbered_list_item"
 ) {
-  text = content.result.numbered_list_item.rich_text[0].text.content;
+  contents = blocksGroup.result.contents;
 }
 ---
 
-<div class="text-xl mb-4">
-  {count}. {text}
-</div>
+<ol role="list" class="list-[revert] list-inside text-xl mb-4">
+  {
+    contents.map((content) => {
+      let text = "";
+      if (
+        isNotBlocksGroup(content.result) &&
+        content.result.type === "numbered_list_item" &&
+        content.result.numbered_list_item.rich_text[0]?.type === "text"
+      ) {
+        text = content.result.numbered_list_item.rich_text[0].text.content;
+
+        return content.childrenLevel == 0 ? (
+          <li>{text}</li>
+        ) : (
+          <ol
+            role="list"
+            class="text-xl mb-4 list-[revert] list-inside"
+            style={`margin-left: ${40 * content.childrenLevel}px`}
+          >
+            <li>{text}</li>
+          </ol>
+        );
+      }
+    })
+  }
+</ol>

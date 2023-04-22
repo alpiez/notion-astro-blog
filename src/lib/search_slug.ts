@@ -17,11 +17,31 @@ type Card =
     }
   | undefined;
 
-export type Content = { result: BlockObjectResponse; childrenLevel: number };
+export type Content = {
+  result: BlockObjectResponse | BlocksGroup;
+  childrenLevel: number;
+};
+
+export interface BlocksGroup {
+  contents: Content[];
+  type: string;
+}
 
 export interface NotionResult {
   card: Card;
   contents: Content[];
+}
+
+export function isBlocksGroup(
+  content: BlockObjectResponse | BlocksGroup
+): content is BlocksGroup {
+  return true;
+}
+
+export function isNotBlocksGroup(
+  content: BlockObjectResponse | BlocksGroup
+): content is BlockObjectResponse {
+  return true;
 }
 
 async function getAllBlocks(pageId: string) {
@@ -38,15 +58,59 @@ async function addToContents(
   childrenLevel = 0
 ) {
   const contents: Content[] = [];
+  let blocksGroup: BlocksGroup = {
+    contents: [],
+    type: "",
+  };
+  let groupingType = "";
 
+  // When iterating the blocks, push them into the `contents`. However when
+  // there's block to be grouped (bulleted list, numbered list, etc), change
+  // `groupingType` state. Any block marked by `groupingType` will be pushed
+  // to `blocksGroup.contents`. State will continue until block that no longer
+  // needed to be grouped, which reset `groupingType` and push the
+  // `blocksGroup` into `contents`.
   for (const result of response.results) {
     if (isFullBlock(result)) {
       let i = childrenLevel;
-      contents.push({ result, childrenLevel: i });
-      if (result.has_children) {
-        contents.push(
-          ...(await addToContents(await getAllBlocks(result.id), ++i))
-        );
+
+      // push `blocksGroup` into `contents` when `groupingType` state is
+      // completed.
+      if (groupingType != result.type && groupingType != "") {
+        contents.push({ result: blocksGroup, childrenLevel: i });
+
+        // reset object and state
+        blocksGroup = { contents: [], type: "" };
+        groupingType = "";
+      }
+
+      // Group blocks (bulleted, numbered list, etc) and push to `blocksGroup`
+      if (
+        // childrenLevel only at 0. We don't want the recursive/children blocks
+        // to go through this codes since we want the recursive function to
+        // return `contents` which will be pushed to `blocksGroup`.
+        childrenLevel == 0 &&
+        (result.type === "numbered_list_item" ||
+          result.type === "bulleted_list_item")
+      ) {
+        blocksGroup.type = groupingType = result.type;
+        blocksGroup.contents.push({ result, childrenLevel: i });
+
+        // Calling recursion here.
+        if (result.has_children) {
+          blocksGroup.contents.push(
+            ...(await addToContents(await getAllBlocks(result.id), ++i))
+          );
+        }
+      }
+      // Else if other blocks type, simply push into `contents`.
+      else {
+        contents.push({ result, childrenLevel: i });
+        if (result.has_children) {
+          contents.push(
+            ...(await addToContents(await getAllBlocks(result.id), ++i))
+          );
+        }
       }
     }
   }
@@ -104,5 +168,6 @@ export async function searchPageWithSlug(slug: string) {
     }
   }
 
+  console.log(JSON.stringify(contents, null, 2));
   return { card, contents } as NotionResult;
 }
