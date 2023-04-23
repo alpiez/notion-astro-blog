@@ -12,6 +12,8 @@ interface Props {
 let { blocksGroup } = Astro.props;
 let contents: Content[] = [];
 let text = "";
+// This `level` variable will be used as state comparison to latest
+// state `content.childrenLevel`.
 let level = 0;
 let rawHtmlString = "";
 let endingTagCount = 0;
@@ -53,9 +55,11 @@ for (const content of contents) {
     // If the childrenLevel decreases, immediately close </ul> tag and
     // decrement `endingTagCount` to prevent extra tag.
     else {
+      let differenceLevel = level - content.childrenLevel;
+      rawHtmlString += "</ul>".repeat(differenceLevel);
       level = content.childrenLevel;
-      endingTagCount--;
-      rawHtmlString += "</ul>";
+      endingTagCount -= differenceLevel;
+      rawHtmlString += `<li>${text}</li>`;
     }
   }
 }
