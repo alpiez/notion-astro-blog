@@ -26,7 +26,7 @@ if (
 
 for (const content of contents) {
   text = "";
-  let olType = ["1", "revert"];
+  let olType = ["1", "decimal"];
 
   if (
     isNotBlocksGroup(content.result) &&
@@ -36,7 +36,7 @@ for (const content of contents) {
     text = content.result.numbered_list_item.rich_text[0].text.content;
 
     if (childrenStep == 0) {
-      olType = ["1", "revert"];
+      olType = ["1", "decimal"];
     } else if (childrenStep == 1) {
       olType = ["a", "lower-alpha"];
     } else if (childrenStep == 2) {
@@ -45,7 +45,7 @@ for (const content of contents) {
 
     //When childrenLevel is consistent, no need to add <ul> tag.
     if (content.childrenLevel == level) {
-      rawHtmlString += `<li>${text}</li>`;
+      rawHtmlString += `<li class="pl-3.5 ml-5">${text}</li>`;
     }
     // If childrenLevel increase, add the <ul> tag and increment
     // `endingTagCount` to add closing </ul> tag. We don't close tag yet since
@@ -62,10 +62,10 @@ for (const content of contents) {
       <ol
         type="${olType[0]}"
         role="list"
-        class="list-[revert] list-inside text-xl ml-10 marker:m-5"
+        class="text-xl ml-10"
         style="list-style: ${olType[1]}"
       >
-        <li>${text}</li>`;
+        <li class="pl-3.5 ml-5">${text}</li>`;
     }
     // If the childrenLevel decreases, immediately close </ul> tag and
     // decrement `endingTagCount` to prevent extra tag.
@@ -79,8 +79,4 @@ for (const content of contents) {
 rawHtmlString += "</ol>".repeat(endingTagCount);
 ---
 
-<ol
-  role="list"
-  class="list-[revert] list-inside text-xl mb-4"
-  set:html={rawHtmlString}
-/>
+<ol role="list" class="list-decimal text-xl mb-4" set:html={rawHtmlString} />
