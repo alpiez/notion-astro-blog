@@ -5,33 +5,46 @@ import Heading2 from "./notion_blocks/heading_2.astro";
 import Heading3 from "./notion_blocks/heading_3.astro";
 import BulletedList from "./notion_blocks/bulleted_list.astro";
 import NumberedList from "./notion_blocks/numbered_list.astro";
-import type { Content } from "../lib/search_slug";
+import type { NotionBlock } from "../lib/types";
 
 interface Props {
-  contents: Array<Content>;
+  blocks: Array<NotionBlock>;
 }
 
-const { contents } = Astro.props;
+const { blocks } = Astro.props;
+let groupedBlock: NotionBlock[] = [];
 ---
 
 <>
   {
-    contents.map((content) => {
-      if (content != undefined) {
+    blocks.map((block, index) => {
+      if (block != undefined) {
         // Pick suitable component based on its notion block type
-        switch (content.result.type) {
+        switch (block.type) {
           case "paragraph":
-            return <Paragraph content={content} />;
+            return <Paragraph block={block} />;
           case "heading_1":
-            return <Heading1 content={content} />;
+            return <Heading1 block={block} />;
           case "heading_2":
-            return <Heading2 content={content} />;
+            return <Heading2 block={block} />;
           case "heading_3":
-            return <Heading3 content={content} />;
+            return <Heading3 block={block} />;
           case "bulleted_list_item":
-            return <BulletedList blocksGroup={content} />;
+            groupedBlock.push(block);
+            if (blocks[++index].type != block.type) {
+              let tempArray = groupedBlock;
+              groupedBlock = [];
+              return <BulletedList blocks={tempArray} />;
+            }
+            break;
           case "numbered_list_item":
-            return <NumberedList blocksGroup={content} />;
+            groupedBlock.push(block);
+            if (blocks[++index].type != block.type) {
+              let tempArray = groupedBlock;
+              groupedBlock = [];
+              return <NumberedList blocks={tempArray} />;
+            }
+            break;
           default:
             "";
         }

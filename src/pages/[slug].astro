@@ -3,8 +3,9 @@ import { Image } from "@astrojs/image/components";
 import BlogRender from "../components/blog_render.astro";
 import Htmlbody from "../components/htmlbody.astro";
 import { databaseId, notion } from "../lib/common_var";
-import { NotionResult, searchPageWithSlug } from "../lib/search_slug";
+import { searchPageWithSlug } from "../lib/notion_request";
 import Tag from "../components/cards/tag.astro";
+import type { NotionResult } from "../lib/types";
 
 export async function getStaticPaths() {
   const response = await notion.databases.query({
@@ -40,9 +41,7 @@ if (slug != undefined) {
 
 <Htmlbody>
   {
-    result != undefined &&
-    result.card != undefined &&
-    result.contents != null ? (
+    result != undefined && result.card != undefined && result.blocks != null ? (
       <>
         <div class="bg-c-sky rounded-b-3xl mb-8">
           {result.card.cover != null ? (
@@ -74,7 +73,7 @@ if (slug != undefined) {
           </div>
         </div>
         <article class="px-8">
-          <BlogRender contents={result.contents} />
+          <BlogRender blocks={result.blocks} />
         </article>
       </>
     ) : (

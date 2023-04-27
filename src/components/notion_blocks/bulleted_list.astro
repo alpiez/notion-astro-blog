@@ -1,69 +1,33 @@
 ---
-import {
-  Content,
-  isBlocksGroup,
-  isNotBlocksGroup,
-} from "../../lib/search_slug";
+import type { NotionBlock } from "../../lib/types";
 
 interface Props {
-  blocksGroup: Content;
+  blocks: NotionBlock[];
 }
 
-let { blocksGroup } = Astro.props;
-let contents: Content[] = [];
-let text = "";
-// This `level` variable will be used as state comparison to latest
-// state `content.childrenLevel`.
-let level = 0;
-let rawHtmlString = "";
-let endingTagCount = 0;
+let { blocks } = Astro.props;
 
-if (
-  isBlocksGroup(blocksGroup.result) &&
-  blocksGroup.result.type === "bulleted_list_item"
-) {
-  contents = blocksGroup.result.contents;
-}
+function contentLoop(blocks: NotionBlock[]) {
+  let htmlString = "";
 
-for (const content of contents) {
-  text = "";
+  for (const block of blocks) {
+    htmlString += `<li>${block.text}</li>`;
 
-  if (
-    isNotBlocksGroup(content.result) &&
-    content.result.type === "bulleted_list_item" &&
-    content.result.bulleted_list_item.rich_text[0]?.type === "text"
-  ) {
-    text = content.result.bulleted_list_item.rich_text[0].text.content;
-
-    //When childrenLevel is consistent, no need to add <ul> tag.
-    if (content.childrenLevel == level) {
-      rawHtmlString += `<li>${text}</li>`;
-    }
-    // If childrenLevel increase, add the <ul> tag and increment
-    // `endingTagCount` to add closing </ul> tag. We don't close tag yet since
-    //  we add another block in this inner html.
-    else if (content.childrenLevel > level) {
-      level = content.childrenLevel;
-      endingTagCount++;
-      rawHtmlString += `
-      <ul
-        role="list"
-        class="list-[revert] list-inside text-xl ml-10"
-      >
-        <li>${text}</li>`;
-    }
-    // If the childrenLevel decreases, immediately close </ul> tag and
-    // decrement `endingTagCount` to prevent extra tag.
-    else {
-      let differenceLevel = level - content.childrenLevel;
-      rawHtmlString += "</ul>".repeat(differenceLevel);
-      level = content.childrenLevel;
-      endingTagCount -= differenceLevel;
-      rawHtmlString += `<li>${text}</li>`;
+    if (block.children.length > 0) {
+      htmlString += `
+        <ul
+          role="list"
+          class="list-[revert] list-inside text-xl ml-10"
+        >
+          ${contentLoop(block.children)}
+        </ul>
+      `;
     }
   }
+  return htmlString;
 }
-rawHtmlString += "</ul>".repeat(endingTagCount);
+
+let rawHtmlString = contentLoop(blocks);
 ---
 
 <ul

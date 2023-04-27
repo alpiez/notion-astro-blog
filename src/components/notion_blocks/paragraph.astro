@@ -1,22 +1,15 @@
 ---
-import { Content, isNotBlocksGroup } from "../../lib/search_slug";
+import type { NotionBlock } from "../../lib/types";
+import BlogRender from "../blog_render.astro";
 
 interface Props {
-  content: Content;
+  block: NotionBlock;
 }
 
-let { content } = Astro.props;
-let para = null;
-
-if (
-  isNotBlocksGroup(content.result) &&
-  content.result.type === "paragraph" &&
-  content.result.paragraph.rich_text[0]?.type === "text"
-) {
-  para = content.result.paragraph.rich_text[0].text.content;
-}
+let { block } = Astro.props;
 ---
 
-<div class="text-xl my-8">
-  {para}
-</div>
+<p class="text-xl my-8">
+  {block.text}
+</p>
+{block.children_level != null ? <BlogRender blocks={block.children} /> : ""}
