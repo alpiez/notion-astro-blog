@@ -62,6 +62,7 @@ function resultFormat(result: BlockObjectResponse) {
   return notionBlock;
 }
 
+// Convert Notion's response into array of NotionBlock objects.
 async function addToContents(
   response: ListBlockChildrenResponse,
   childLvl = 0
@@ -81,7 +82,7 @@ async function addToContents(
 
       if (result.has_children) {
         notionBlock.children.push(
-          ...(await addToContents(await getAllBlocks(result.id), ++childLvl))
+          ...(await addToContents(await getAllBlocks(result.id), childLvl + 1))
         );
       }
 

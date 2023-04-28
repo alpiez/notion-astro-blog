@@ -31,7 +31,10 @@ let groupedBlock: NotionBlock[] = [];
             return <Heading3 block={block} />;
           case "bulleted_list_item":
             groupedBlock.push(block);
-            if (blocks[++index].type != block.type) {
+            if (
+              blocks.length - 1 == index ||
+              blocks[++index].type != block.type
+            ) {
               let tempArray = groupedBlock;
               groupedBlock = [];
               return <BulletedList blocks={tempArray} />;
@@ -39,7 +42,10 @@ let groupedBlock: NotionBlock[] = [];
             break;
           case "numbered_list_item":
             groupedBlock.push(block);
-            if (blocks[++index].type != block.type) {
+            if (
+              blocks.length - 1 == index ||
+              blocks[++index].type != block.type
+            ) {
               let tempArray = groupedBlock;
               groupedBlock = [];
               return <NumberedList blocks={tempArray} />;
