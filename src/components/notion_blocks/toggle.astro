@@ -1,0 +1,20 @@
+---
+import type { NotionBlock } from "../../lib/types";
+import BlogRender from "../blog_render.astro";
+
+interface Props {
+  block: NotionBlock;
+  index: number;
+}
+
+let { block, index } = Astro.props;
+const elementId = "tg-" + index;
+---
+
+<div class="text-xl my-8 ease-in-out" onclick="toggle(this)">
+  <span class="inline-block mr-1.5 duration-100">▶</span>
+  {block.text}
+  <div id={elementId} class="pl-7" style="display: none">
+    {block.children_level != null ? <BlogRender blocks={block.children} /> : ""}
+  </div>
+</div>

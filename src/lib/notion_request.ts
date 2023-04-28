@@ -54,6 +54,11 @@ function resultFormat(result: BlockObjectResponse) {
       if (result.numbered_list_item.rich_text[0]?.type == "text")
         notionBlock.text = result.numbered_list_item.rich_text[0].text.content;
       break;
+    case "toggle":
+      notionBlock.type = "toggle";
+      if (result.toggle.rich_text[0]?.type == "text")
+        notionBlock.text = result.toggle.rich_text[0].text.content;
+      break;
     default:
       break;
   }

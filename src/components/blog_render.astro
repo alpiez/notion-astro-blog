@@ -6,6 +6,7 @@ import Heading3 from "./notion_blocks/heading_3.astro";
 import BulletedList from "./notion_blocks/bulleted_list.astro";
 import NumberedList from "./notion_blocks/numbered_list.astro";
 import type { NotionBlock } from "../lib/types";
+import Toggle from "./notion_blocks/toggle.astro";
 
 interface Props {
   blocks: Array<NotionBlock>;
@@ -51,10 +52,23 @@ let groupedBlock: NotionBlock[] = [];
               return <NumberedList blocks={tempArray} />;
             }
             break;
+          case "toggle":
+            return <Toggle block={block} index={index} />;
           default:
             "";
         }
       }
     })
   }
+  <script is:inline>
+    function toggle(ele) {
+      if (ele.lastElementChild.style.display === "none") {
+        ele.lastElementChild.style.display = "block";
+        ele.firstElementChild.style.transform = "rotate(90deg)";
+      } else {
+        ele.lastElementChild.style.display = "none";
+        ele.firstElementChild.style.transform = "rotate(0deg)";
+      }
+    }
+  </script>
 </>
