@@ -59,6 +59,11 @@ function resultFormat(result: BlockObjectResponse) {
       if (result.toggle.rich_text[0]?.type == "text")
         notionBlock.text = result.toggle.rich_text[0].text.content;
       break;
+    case "quote":
+      notionBlock.type = "quote";
+      if (result.quote.rich_text[0]?.type == "text")
+        notionBlock.text = result.quote.rich_text[0].text.content;
+      break;
     default:
       break;
   }

@@ -1,0 +1,15 @@
+---
+import type { NotionBlock } from "../../lib/types";
+
+interface Props {
+  block: NotionBlock;
+}
+
+let { block } = Astro.props;
+const rawStringHtml = block.text.replace(/\n/g, "<br>");
+---
+
+<blockquote class="text-xl my-8 flex">
+  <span class="w-1 mr-5 bg-black inline-flex"></span>
+  <Fragment set:html={rawStringHtml} />
+</blockquote>
