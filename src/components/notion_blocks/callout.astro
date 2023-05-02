@@ -1,0 +1,39 @@
+---
+import type { NotionBlock } from "../../lib/types";
+
+interface Props {
+  block: NotionBlock;
+}
+
+let { block } = Astro.props;
+let icon = "";
+let type = "";
+
+if (block.options != null && block.options.icon != null) {
+  type = block.options.icon.type;
+  if (block.options.icon.type === "emoji") {
+    icon = block.options.icon.emoji;
+  } else if (block.options.icon.type === "external") {
+    icon = block.options.icon.external.url;
+  } else if (block.options.icon.type === "file") {
+    icon = block.options.icon.file.url;
+  }
+}
+
+//TODO add custom bg color
+---
+
+<div class="p-6 my-8 bg-c-sky flex rounded gap-4">
+  <>
+    {
+      type === "emoji" ? (
+        <p class="text-xl">{icon}</p>
+      ) : (
+        <img src={icon} class="w-6 h-6" />
+      )
+    }
+  </>
+  <p class="text-xl">
+    {block.text}
+  </p>
+</div>

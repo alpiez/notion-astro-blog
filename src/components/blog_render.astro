@@ -8,6 +8,7 @@ import NumberedList from "./notion_blocks/numbered_list.astro";
 import type { NotionBlock } from "../lib/types";
 import Toggle from "./notion_blocks/toggle.astro";
 import Quote from "./notion_blocks/quote.astro";
+import Callout from "./notion_blocks/callout.astro";
 
 interface Props {
   blocks: Array<NotionBlock>;
@@ -57,6 +58,8 @@ let groupedBlock: NotionBlock[] = [];
             return <Toggle block={block} index={index} />;
           case "quote":
             return <Quote block={block} />;
+          case "callout":
+            return <Callout block={block} />;
           default:
             "";
         }

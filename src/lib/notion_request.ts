@@ -21,6 +21,7 @@ function resultFormat(result: BlockObjectResponse) {
     type: "",
     children: [],
     children_level: 0,
+    options: null,
   };
 
   switch (result.type) {
@@ -64,6 +65,14 @@ function resultFormat(result: BlockObjectResponse) {
       if (result.quote.rich_text[0]?.type == "text")
         notionBlock.text = result.quote.rich_text[0].text.content;
       break;
+    case "callout":
+      notionBlock.type = "callout";
+      if (result.callout.rich_text[0]?.type == "text")
+        notionBlock.text = result.callout.rich_text[0].text.content;
+      notionBlock.options = {
+        icon: result.callout.icon,
+      };
+      break;
     default:
       break;
   }
@@ -83,6 +92,7 @@ async function addToContents(
     type: "",
     children: [],
     children_level: 0,
+    options: null,
   };
 
   for (const result of response.results) {
