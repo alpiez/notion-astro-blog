@@ -80,4 +80,15 @@ if (slug != undefined) {
       ""
     )
   }
+  <script is:inline>
+    function toggle(ele) {
+      if (ele.lastElementChild.style.display === "none") {
+        ele.lastElementChild.style.display = "block";
+        ele.firstElementChild.style.transform = "rotate(90deg)";
+      } else {
+        ele.lastElementChild.style.display = "none";
+        ele.firstElementChild.style.transform = "rotate(0deg)";
+      }
+    }
+  </script>
 </Htmlbody>
