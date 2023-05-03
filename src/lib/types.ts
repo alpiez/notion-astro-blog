@@ -31,12 +31,16 @@ type NotionCalloutBlock = {
     | null;
 };
 
+type NotionCodeBlock = {
+  language: string;
+};
+
 export type NotionBlock = {
   text: string;
   type: string;
   children: Array<NotionBlock>;
   children_level: number;
-  options: null | NotionCalloutBlock;
+  options: null | NotionCalloutBlock | NotionCodeBlock;
 };
 
 export interface NotionResult {

@@ -1,0 +1,17 @@
+---
+import type { NotionBlock } from "../../lib/types";
+import { Prism } from "@astrojs/prism";
+
+interface Props {
+  block: NotionBlock;
+}
+
+let { block } = Astro.props;
+let lang = "";
+
+if (block.options != null && "language" in block.options) {
+  lang = block.options.language;
+}
+---
+
+<Prism code={block.text} lang={lang} class="p-8 my-8" />

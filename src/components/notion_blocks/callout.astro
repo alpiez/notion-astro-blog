@@ -9,7 +9,11 @@ let { block } = Astro.props;
 let icon = "";
 let type = "";
 
-if (block.options != null && block.options.icon != null) {
+if (
+  block.options != null &&
+  "icon" in block.options &&
+  block.options.icon != null
+) {
   type = block.options.icon.type;
   if (block.options.icon.type === "emoji") {
     icon = block.options.icon.emoji;

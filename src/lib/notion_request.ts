@@ -73,6 +73,14 @@ function resultFormat(result: BlockObjectResponse) {
         icon: result.callout.icon,
       };
       break;
+    case "code":
+      notionBlock.type = "code";
+      if (result.code.rich_text[0]?.type == "text")
+        notionBlock.text = result.code.rich_text[0].text.content;
+      notionBlock.options = {
+        language: result.code.language,
+      };
+      break;
     default:
       break;
   }

@@ -8,3 +8,7 @@ A blog built with Astro that fetches pages from your Notion.
 npm install
 npm run dev
 ```
+
+## To-do
+
+- [ ] Colors option for callout block
