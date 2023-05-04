@@ -81,6 +81,17 @@ function resultFormat(result: BlockObjectResponse) {
         language: result.code.language,
       };
       break;
+    case "image":
+      notionBlock.type = "image";
+      if (result.image.caption[0]?.type == "text")
+        notionBlock.text = result.image.caption[0].text.content;
+      notionBlock.options = {
+        url:
+          result.image.type == "file"
+            ? result.image.file.url
+            : result.image.external.url,
+      };
+      break;
     default:
       break;
   }

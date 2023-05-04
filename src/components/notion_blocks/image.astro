@@ -1,0 +1,17 @@
+---
+import type { NotionBlock } from "../../lib/types";
+
+interface Props {
+  block: NotionBlock;
+}
+
+let { block } = Astro.props;
+let imgSrc = "";
+
+if (block.options != null && "url" in block.options) {
+  imgSrc = block.options.url;
+}
+//TODO add img captions
+---
+
+<img src={imgSrc} alt="image" class="my-8" />

@@ -35,12 +35,16 @@ type NotionCodeBlock = {
   language: string;
 };
 
+type NotionImage = {
+  url: string;
+};
+
 export type NotionBlock = {
   text: string;
   type: string;
   children: Array<NotionBlock>;
   children_level: number;
-  options: null | NotionCalloutBlock | NotionCodeBlock;
+  options: null | NotionCalloutBlock | NotionCodeBlock | NotionImage;
 };
 
 export interface NotionResult {
