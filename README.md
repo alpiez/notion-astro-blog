@@ -2,9 +2,11 @@
 
 A blog built with Astro that fetches pages from your Notion.
 
+⚠ Currently still under development!
+
 ## How to setup
 
-Please follow this guide: [HOWTOSETUP.md](HOWTOSETUP.md)
+Please follow this guide! 👉 [HOWTOSETUP.md](HOWTOSETUP.md)
 
 ## Run the server
 
@@ -31,5 +33,6 @@ npm run preview
 
 ### Other features
 
-- ❌ highlight, bold, italicize, underline, strike, code, equation?
+- ❌ Highlight, bold, italicize, underline, strike, code, equation?
 - ❌ Colors option for callout block
+- ❌ And many more I think...

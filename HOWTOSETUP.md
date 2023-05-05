@@ -11,7 +11,7 @@
    ![integration1](https://user-images.githubusercontent.com/56145204/236415042-04d127f5-4235-4219-94c1-676908a5e81f.png)
 
    ![integration2](https://user-images.githubusercontent.com/56145204/236415157-e20bc05a-04ed-4603-b122-a7b5a2e6ab82.png)
-   
+
    At a minimum, your Integration's capabilities should allow READ-ONLY rules. This means that only you, as the owner, can modify it.
 
    ![integration3](https://user-images.githubusercontent.com/56145204/236415304-7267137c-fe10-4b9a-bcf0-636b94a6a5c7.png)
