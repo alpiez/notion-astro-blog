@@ -37,14 +37,14 @@ const response = await notion.databases.query({
         "rich_text" in page.properties.Intro &&
         "formula" in page.properties.Slug &&
         "string" in page.properties.Slug.formula &&
+        page.properties.Slug.formula.string != null &&
         // Ensure that the content is not empty
         (page.properties.Title.title.length &&
           page.properties.Tags.multi_select.length &&
           page.properties.Intro.rich_text.length) != 0 ? (
           <Blog
             title={page.properties.Title.title[0].plain_text}
-            tagName={page.properties.Tags.multi_select[0].name}
-            tagColor={page.properties.Tags.multi_select[0].color}
+            tags={page.properties.Tags.multi_select}
             intro={page.properties.Intro.rich_text[0].plain_text}
             slug={page.properties.Slug.formula.string}
           />

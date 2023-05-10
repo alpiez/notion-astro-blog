@@ -1,19 +1,31 @@
 ---
 import Tag from "./tag.astro";
 
-const {
-  title = "",
-  tagName = "",
-  tagColor = "",
-  intro = "",
-  slug = "",
-} = Astro.props;
+interface TagProps {
+  name: string;
+  color: string;
+}
+
+interface Props {
+  title: string;
+  tags: Array<TagProps>;
+  intro: string;
+  slug: string;
+}
+
+const { title = "", tags = [], intro = "", slug = "" } = Astro.props;
 ---
 
 <div class="bg-c-sky h-52 w-full rounded-2xl p-4 mb-4">
   <a href={`./${slug}`}>
     <h2 class="font-semibold text-2xl mb-2">{title}</h2>
-    <Tag className="mb-2" tagName={tagName} tagColor={tagColor} />
+    <div class="flex gap-2">
+      {
+        tags.map((tag) => (
+          <Tag className="mb-2" tagName={tag.name} tagColor={tag.color} />
+        ))
+      }
+    </div>
     <p>{intro}</p>
   </a>
 </div>
