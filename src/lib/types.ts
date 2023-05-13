@@ -10,6 +10,19 @@ export type Card =
     }
   | undefined;
 
+export type NotionText = {
+  plain_text: string;
+  annotations: {
+    bold: boolean;
+    italic: boolean;
+    strikethrough: boolean;
+    underline: boolean;
+    code: boolean;
+    color: string;
+  };
+  href: string | null;
+};
+
 type NotionCalloutBlock = {
   icon:
     | {

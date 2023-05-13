@@ -4,7 +4,7 @@ import type {
   BlockObjectResponse,
   ListBlockChildrenResponse,
 } from "@notionhq/client/build/src/api-endpoints";
-import type { NotionBlock, Card, NotionResult } from "./types";
+import type { NotionBlock, Card, NotionResult, NotionText } from "./types";
 
 async function getAllBlocks(pageId: string) {
   const response = await notion.blocks.children.list({
@@ -27,64 +27,53 @@ function resultFormat(result: BlockObjectResponse) {
   switch (result.type) {
     case "paragraph":
       notionBlock.type = "paragraph";
-      if (result.paragraph.rich_text[0]?.type == "text")
-        notionBlock.text = result.paragraph.rich_text[0].text.content;
+      notionBlock.text = loopText(result.paragraph.rich_text);
       break;
     case "heading_1":
       notionBlock.type = "heading_1";
-      if (result.heading_1.rich_text[0]?.type == "text")
-        notionBlock.text = result.heading_1.rich_text[0].text.content;
+      notionBlock.text = loopText(result.heading_1.rich_text);
       break;
     case "heading_2":
       notionBlock.type = "heading_2";
-      if (result.heading_2.rich_text[0]?.type == "text")
-        notionBlock.text = result.heading_2.rich_text[0].text.content;
+      notionBlock.text = loopText(result.heading_2.rich_text);
       break;
     case "heading_3":
       notionBlock.type = "heading_3";
-      if (result.heading_3.rich_text[0]?.type == "text")
-        notionBlock.text = result.heading_3.rich_text[0].text.content;
+      notionBlock.text = loopText(result.heading_3.rich_text);
       break;
     case "bulleted_list_item":
       notionBlock.type = "bulleted_list_item";
-      if (result.bulleted_list_item.rich_text[0]?.type == "text")
-        notionBlock.text = result.bulleted_list_item.rich_text[0].text.content;
+      notionBlock.text = loopText(result.bulleted_list_item.rich_text);
       break;
     case "numbered_list_item":
       notionBlock.type = "numbered_list_item";
-      if (result.numbered_list_item.rich_text[0]?.type == "text")
-        notionBlock.text = result.numbered_list_item.rich_text[0].text.content;
+      notionBlock.text = loopText(result.numbered_list_item.rich_text);
       break;
     case "toggle":
       notionBlock.type = "toggle";
-      if (result.toggle.rich_text[0]?.type == "text")
-        notionBlock.text = result.toggle.rich_text[0].text.content;
+      notionBlock.text = loopText(result.toggle.rich_text);
       break;
     case "quote":
       notionBlock.type = "quote";
-      if (result.quote.rich_text[0]?.type == "text")
-        notionBlock.text = result.quote.rich_text[0].text.content;
+      notionBlock.text = loopText(result.quote.rich_text);
       break;
     case "callout":
       notionBlock.type = "callout";
-      if (result.callout.rich_text[0]?.type == "text")
-        notionBlock.text = result.callout.rich_text[0].text.content;
+      notionBlock.text = loopText(result.callout.rich_text);
       notionBlock.options = {
         icon: result.callout.icon,
       };
       break;
     case "code":
       notionBlock.type = "code";
-      if (result.code.rich_text[0]?.type == "text")
-        notionBlock.text = result.code.rich_text[0].text.content;
+      notionBlock.text = loopText(result.code.rich_text);
       notionBlock.options = {
         language: result.code.language,
       };
       break;
     case "image":
       notionBlock.type = "image";
-      if (result.image.caption[0]?.type == "text")
-        notionBlock.text = result.image.caption[0].text.content;
+      notionBlock.text = loopText(result.image.caption);
       notionBlock.options = {
         url:
           result.image.type == "file"
@@ -182,4 +171,85 @@ export async function searchPageWithSlug(slug: string) {
   }
 
   return { card, blocks } as NotionResult;
+}
+
+function loopText(texts: Array<NotionText>) {
+  let htmlString = "";
+  let textHolder = "";
+
+  for (const text of texts) {
+    textHolder = "";
+    if (text.href != null) {
+      textHolder = `<a href="${text.href}" class="underline">${text.plain_text}</a>`;
+    } else {
+      textHolder = text.plain_text;
+    }
+
+    if (text.annotations.bold === true) {
+      textHolder = `<b>${textHolder}</b>`;
+    }
+    if (text.annotations.italic === true) {
+      textHolder = `<i>${textHolder}</i>`;
+    }
+    if (text.annotations.strikethrough === true) {
+      textHolder = `<del>${textHolder}</del>`;
+    }
+    if (text.annotations.underline === true) {
+      textHolder = `<ins>${textHolder}</ins>`;
+    }
+    if (text.annotations.code === true) {
+      textHolder = `<code>${textHolder}</code>`;
+    }
+    if (text.annotations.color !== "default") {
+      textHolder = textColorFormat(textHolder, text.annotations.color);
+    }
+
+    htmlString += textHolder;
+  }
+
+  return htmlString;
+}
+
+function textColorFormat(text: string, color: string) {
+  const arr = color.split("_");
+  let colorStyle = "";
+  switch (arr[0]) {
+    case "gray":
+      colorStyle = "#A4A4A4";
+      break;
+    case "brown":
+      colorStyle = "#B4816C";
+      break;
+    case "orange":
+      colorStyle = "#E88C59";
+      break;
+    case "yellow":
+      colorStyle = "#F5D06F";
+      break;
+    case "green":
+      colorStyle = "#9DCE77";
+      break;
+    case "blue":
+      colorStyle = "#5BB4E5";
+      break;
+    case "purple":
+      colorStyle = "#B383DA";
+      break;
+    case "pink":
+      colorStyle = "#EE86D1";
+      break;
+    case "red":
+      colorStyle = "#F47575";
+      break;
+    default:
+      colorStyle = "#D9D9D9";
+      break;
+  }
+
+  if (arr[1] == "background") {
+    text = `<mark style="background: ${colorStyle}">${text}</mark>`;
+    return text;
+  }
+  text = `<span style="color: ${colorStyle}">${text}</span>`;
+  return text;
 }
