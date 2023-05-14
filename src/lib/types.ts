@@ -11,6 +11,7 @@ export type Card =
   | undefined;
 
 export type NotionText = {
+  type: string;
   plain_text: string;
   annotations: {
     bold: boolean;

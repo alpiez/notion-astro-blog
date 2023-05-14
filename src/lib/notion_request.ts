@@ -5,6 +5,7 @@ import type {
   ListBlockChildrenResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 import type { NotionBlock, Card, NotionResult, NotionText } from "./types";
+import katex from "katex";
 
 async function getAllBlocks(pageId: string) {
   const response = await notion.blocks.children.list({
@@ -181,6 +182,12 @@ function loopText(texts: Array<NotionText>) {
     textHolder = "";
     if (text.href != null) {
       textHolder = `<a href="${text.href}" class="underline">${text.plain_text}</a>`;
+    } else if (text.type === "equation") {
+      textHolder = katex.renderToString(text.plain_text, {
+        //https://katex.org/docs/options.html
+        throwOnError: false,
+        output: "mathml",
+      });
     } else {
       textHolder = text.plain_text;
     }
