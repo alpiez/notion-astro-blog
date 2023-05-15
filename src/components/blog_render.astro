@@ -11,6 +11,7 @@ import Quote from "./notion_blocks/quote.astro";
 import Callout from "./notion_blocks/callout.astro";
 import Code from "./notion_blocks/code.astro";
 import Image from "./notion_blocks/image.astro";
+import Equation from "./notion_blocks/equation.astro";
 
 interface Props {
   blocks: Array<NotionBlock>;
@@ -66,6 +67,8 @@ let groupedBlock: NotionBlock[] = [];
             return <Code block={block} />;
           case "image":
             return <Image block={block} />;
+          case "equation":
+            return <Equation block={block} />;
           default:
             "";
         }

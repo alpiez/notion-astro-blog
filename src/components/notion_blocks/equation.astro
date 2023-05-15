@@ -1,0 +1,20 @@
+---
+import katex from "katex";
+import type { NotionBlock } from "../../lib/types";
+import BlogRender from "../blog_render.astro";
+
+interface Props {
+  block: NotionBlock;
+}
+
+let { block } = Astro.props;
+
+let equation = katex.renderToString(block.text, {
+  //https://katex.org/docs/options.html
+  throwOnError: false,
+  output: "mathml",
+});
+---
+
+<figure class="text-xl my-8 flex justify-center" set:html={equation} />
+{block.children_level != null ? <BlogRender blocks={block.children} /> : ""}

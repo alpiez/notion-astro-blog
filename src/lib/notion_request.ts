@@ -82,6 +82,10 @@ function resultFormat(result: BlockObjectResponse) {
             : result.image.external.url,
       };
       break;
+    case "equation":
+      notionBlock.type = "equation";
+      notionBlock.text = result.equation.expression;
+      break;
     default:
       break;
   }
