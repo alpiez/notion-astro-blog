@@ -1,0 +1,12 @@
+---
+import type { NotionBlock } from "../../lib/types";
+import BlogRender from "../blog_render.astro";
+
+interface Props {
+  block: NotionBlock;
+}
+
+let { block } = Astro.props;
+---
+
+{block.children_level != null ? <BlogRender blocks={block.children} /> : ""}

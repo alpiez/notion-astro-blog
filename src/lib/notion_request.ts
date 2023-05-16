@@ -87,6 +87,9 @@ function resultFormat(result: BlockObjectResponse) {
       notionBlock.text = result.equation.expression;
       break;
     default:
+    case "synced_block":
+      notionBlock.type = "synced_block";
+      notionBlock.text = "";
       break;
   }
 
@@ -112,10 +115,20 @@ async function addToContents(
     if (isFullBlock(result)) {
       notionBlock = resultFormat(result);
       notionBlock.children_level = childLvl;
+      let id = "";
+
+      if (
+        result.type === "synced_block" &&
+        result.synced_block.synced_from !== null
+      ) {
+        id = result.synced_block.synced_from.block_id;
+      } else {
+        id = result.id;
+      }
 
       if (result.has_children) {
         notionBlock.children.push(
-          ...(await addToContents(await getAllBlocks(result.id), childLvl + 1))
+          ...(await addToContents(await getAllBlocks(id), childLvl + 1))
         );
       }
 

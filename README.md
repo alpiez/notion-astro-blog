@@ -30,10 +30,30 @@ npm run preview
 - ✅ callout
 - ✅ code
 - ✅ image
-- ❌ equation
+- ✅ equation
+- ✅ synced block
+- ❌ divider
+- ❌ file
+- ❌ table
+- ❌ table of contents
+- ❌ todo
+- ❌ video
 
 ### Other features
 
 - ✅ Text formatting (Highlight, bold, italicize, underline, strike, code, equation)
 - ❌ Colors option for callout block
 - ❌ And many more I think...
+
+### Unneeded Blocks
+
+Blocks that are not essential for crafting a blog will not be added.
+
+Opened to any requests for these blocks to be added.
+
+- bookmark
+- breadcrumb
+- child database
+- child page
+- link preview
+- pdf
