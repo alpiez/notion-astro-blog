@@ -2,7 +2,7 @@
 
 A blog built with Astro that fetches pages from your Notion.
 
-⚠ Currently still under development!
+⚠ Under development! 🤔 But most of the hypothetical functions needed for blog are all here. Create an issue if you needed any Notion block to be added!
 
 ## How to setup
 
@@ -49,7 +49,7 @@ npm run preview
 
 Blocks that are not essential for crafting a blog will not be added.
 
-Opened to any requests for these blocks to be added.
+Open to any requests for these blocks to be added.
 
 - bookmark
 - breadcrumb
